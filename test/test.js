@@ -26,7 +26,7 @@ describe('keras2circom test', function () {
 
     describe('models/best_practice.h5', async () => {
         it('softmax output', async () => {
-            await exec('python main.py models/best_practice.h5 -o best_practice');
+            await exec('python3 main.py models/best_practice.h5 -o best_practice');
 
             const json = JSON.parse(fs.readFileSync('./best_practice/circuit.json'));
 
@@ -58,7 +58,7 @@ describe('keras2circom test', function () {
         });
 
         it('raw output', async () => {
-            await exec('python main.py models/best_practice.h5 -o best_practice_raw --raw');
+            await exec('python3 main.py models/best_practice.h5 -o best_practice_raw --raw');
 
             const json = JSON.parse(fs.readFileSync('./best_practice_raw/circuit.json'));
 
@@ -110,7 +110,7 @@ describe('keras2circom test', function () {
 
     describe('models/alt_model.h5', async () => {
         it('softmax output', async () => {
-            await exec('python main.py models/alt_model.h5 -o alt_model');
+            await exec('python3 main.py models/alt_model.h5 -o alt_model');
 
             const json = JSON.parse(fs.readFileSync('./alt_model/circuit.json'));
 
@@ -142,7 +142,7 @@ describe('keras2circom test', function () {
         });
 
         it('raw output', async () => {
-            await exec('python main.py models/alt_model.h5 -o alt_model_raw --raw');
+            await exec('python3 main.py models/alt_model.h5 -o alt_model_raw --raw');
 
             const json = JSON.parse(fs.readFileSync('./alt_model_raw/circuit.json'));
 
