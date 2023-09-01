@@ -12,6 +12,33 @@ def transpile(filename: str, output_dir: str = 'output', raw: bool = False) -> C
     model = Model(filename, raw)
 
     circuit = Circuit()
+
+    tmp_str = '''----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Linear-1                  [-1, 256]         200,960
+              ReLU-2                  [-1, 256]               0
+            Linear-3                  [-1, 256]          65,792
+              ReLU-4                  [-1, 256]               0
+            Linear-5                  [-1, 256]          65,792
+              ReLU-6                  [-1, 256]               0
+            Linear-7                  [-1, 128]          32,896
+              ReLU-8                  [-1, 128]               0
+            Linear-9                  [-1, 128]          16,512
+             ReLU-10                  [-1, 128]               0
+           Linear-11                   [-1, 10]           1,290
+================================================================
+Total params: 383,242
+Trainable params: 383,242
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 149.54
+Forward/backward pass size (MB): 0.02
+Params size (MB): 1.46
+Estimated Total Size (MB): 151.01
+----------------------------------------------------------------'''
+    # parse tmp str and get module names
+    
     for layer in model.layers[:-1]:
         circuit.add_components(transpile_layer(layer))
     
