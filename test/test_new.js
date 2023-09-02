@@ -28,7 +28,7 @@ describe('torch2circom test', function () {
         it('raw output', async () => {
             // await exec('python3 main.py models/best_practice.h5 -o best_practice_raw --raw');
 
-            let INPUT = JSON.parse(fs.readFileSync('./transformer/transformer_input.json'));
+            let INPUT = JSON.parse(fs.readFileSync('./transformer/transformer_input_scale9.json'));
             let OUTPUT = JSON.parse(fs.readFileSync('./transformer/transformer_output.json'));
 
             // let INPUT = {};
@@ -50,7 +50,7 @@ describe('torch2circom test', function () {
             
             assert(Fr.eq(Fr.e(witness[0]),Fr.e(1)));
 
-            const scale = 1E-51;
+            const scale = 1E-77;
 
             let predicted = [];
             for (var i=0; i<OUTPUT['out'].length; i++) {
@@ -65,9 +65,9 @@ describe('torch2circom test', function () {
                 ape += Math.abs((predicted[i]-actual)/actual);
             }
 
-            const mape = ape/best_practice['y'].length;
+            const mape = 100*ape/OUTPUT['out'].length;
 
-            console.log('mean absolute % error', mape);
+            console.log('mean absolute error %', mape);
         });
     });
 });
