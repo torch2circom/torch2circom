@@ -1,14 +1,14 @@
 {
-  "name": "keras2circom",
+  "name": "torch2circom",
   "version": "0.0.0",
-  "description": "keras2circom circuit tests",
+  "description": "torch2circom circuit tests",
   "main": "index.js",
   "scripts": {
     "test": "mocha --max-old-space-size=4000"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/socathie/keras2circom.git"
+    "url": "git+https://github.com/torch2circom/torch2circom.git"
   },
   "author": "Cathie So, PhD",
   "license": "MIT",

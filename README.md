@@ -9,7 +9,7 @@ torch2circom is a python tool that transpiles a PyTorch model into a circom circ
 First, clone the repository:
 
 ```bash
-git clone https://github.com/socathie/keras2circom.git
+git clone https://github.com/torch2circom/torch2circom.git
 ```
 
 Then, install the dependencies. You can use pip:

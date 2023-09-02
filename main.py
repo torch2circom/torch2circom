@@ -12,7 +12,7 @@ Options:
 """
 from docopt import docopt
 
-from keras2circom import circom, transpiler
+from torch2circom import circom, transpiler
 
 def main():
     """ Main entry point of the app """
