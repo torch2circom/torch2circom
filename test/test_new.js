@@ -28,21 +28,8 @@ describe('torch2circom test', function () {
         it('raw output', async () => {
             // await exec('python3 main.py models/best_practice.h5 -o best_practice_raw --raw');
 
-            let INPUT = JSON.parse(fs.readFileSync('./transformer/transformer_input_scale9.json'));
+            let INPUT = JSON.parse(fs.readFileSync('./transformer/transformer_input.json'));
             let OUTPUT = JSON.parse(fs.readFileSync('./transformer/transformer_output.json'));
-
-            // let INPUT = {};
-            // for (const [key, value] of Object.entries(json)) {
-            //     if (Array.isArray(value)) {
-            //         let tmpArray = [];
-            //         for (let i = 0; i < value.flat().length; i++) {
-            //             tmpArray.push(Fr.e(value.flat()[i]));
-            //         }
-            //         INPUT[key] = tmpArray;
-            //     } else {
-            //         INPUT[key] = Fr.e(value);
-            //     }
-            // }
 
             const circuit = await wasm_tester('./transformer_circuit.circom');
             
@@ -50,7 +37,7 @@ describe('torch2circom test', function () {
             
             assert(Fr.eq(Fr.e(witness[0]),Fr.e(1)));
 
-            const scale = 1E-77;
+            const scale = 1E-67;
 
             let predicted = [];
             for (var i=0; i<OUTPUT['out'].length; i++) {
@@ -60,14 +47,14 @@ describe('torch2circom test', function () {
             let ape = 0;
 
             for (var i=0; i<OUTPUT['out'].length; i++) {
-                const actual = OUTPUT['out'][i];
+                const actual = parseFloat(OUTPUT['out'][i]);
                 console.log('actual', actual, 'predicted', predicted[i]);
-                ape += Math.abs((predicted[i]-actual)/actual);
+                ape += Math.abs((predicted[i]-actual));
             }
 
-            const mape = 100*ape/OUTPUT['out'].length;
+            const mape = ape/OUTPUT['out'].length;
 
-            console.log('mean absolute error %', mape);
+            console.log('mean absolute error ', mape);
         });
     });
 });
