@@ -1,5 +1,7 @@
 from .circom import *
 from .model import *
+from transformer import TransformerTranslator
+
 
 import os
 
@@ -8,38 +10,79 @@ poly_activation = '4wEAAAAAAAAAAAAAAAEAAAACAAAAQwAAAHMMAAAAfABkARMAfAAXAFMAKQJO6
 
 def transpile(filename: str, output_dir: str = 'output', raw: bool = False) -> Circuit:
     ''' Transpile a Keras model to a CIRCOM circuit.'''
-    
-    model = Model(filename, raw)
+
+
+    batch_size = 64
+    embed_dim = 512
+    num_blocks = 1
+    num_heads = 1  # Must be factor of token size
+    max_context_length = 1000
+    CUDA = True
+    num_epochs = 1000
+    learning_rate = 1e-3
+    device = torch.device("cuda:0" if CUDA else "cpu")
+    use_teacher_forcing = False
+
+    # torch.set_default_tensor_type(torch.cuda.FloatTensor if CUDA else torch.FloatTensor)
+    encoder_vocab_size=5000
+    output_vocab_size=5000
+    model = TransformerTranslator(
+        embed_dim, num_blocks, num_heads, encoder_vocab_size,output_vocab_size,CUDA=CUDA
+    )
+
+    import ipdb
+    ipdb.set_trace()
 
     circuit = Circuit()
 
-    tmp_str = '''----------------------------------------------------------------
-        Layer (type)               Output Shape         Param #
-================================================================
-            Linear-1                  [-1, 256]         200,960
-              ReLU-2                  [-1, 256]               0
-            Linear-3                  [-1, 256]          65,792
-              ReLU-4                  [-1, 256]               0
-            Linear-5                  [-1, 256]          65,792
-              ReLU-6                  [-1, 256]               0
-            Linear-7                  [-1, 128]          32,896
-              ReLU-8                  [-1, 128]               0
-            Linear-9                  [-1, 128]          16,512
-             ReLU-10                  [-1, 128]               0
-           Linear-11                   [-1, 10]           1,290
-================================================================
-Total params: 383,242
-Trainable params: 383,242
-Non-trainable params: 0
-----------------------------------------------------------------
-Input size (MB): 149.54
-Forward/backward pass size (MB): 0.02
-Params size (MB): 1.46
-Estimated Total Size (MB): 151.01
-----------------------------------------------------------------'''
+
+
+    # 
+    tmp_lst = ['Embedding',
+ 'PositionalEncoding',
+ 'Linear',
+ 'Linear',
+ 'Linear',
+ 'L2NormalizationLayer',
+ 'SingleheadAttn',
+ 'Linear',
+ 'ReLU',
+ 'Linear',
+ 'Dropout',
+ 'L2NormalizationLayer',
+ 'AddandNorm',
+ 'Embedding',
+ 'PositionalEncoding',
+ 'Linear',
+ 'Linear',
+ 'Linear',
+ 'L2NormalizationLayer',
+ 'SingleheadAttn',
+ 'Linear',
+ 'ReLU',
+ 'Linear',
+ 'Dropout',
+ 'L2NormalizationLayer',
+ 'AddandNorm',
+ 'Linear',
+ 'Linear',
+ 'Linear',
+ 'L2NormalizationLayer',
+ 'SingleheadAttn',
+ 'Linear',
+ 'ReLU',
+ 'Linear',
+ 'Dropout',
+ 'L2NormalizationLayer',
+ 'AddandNorm',
+ 'Linear',
+ 'L2NormalizationLayer']
     # parse tmp str and get module names
     
-    for layer in model.layers[:-1]:
+    # parse 
+
+
+    for layer in tmp_lst:
         circuit.add_components(transpile_layer(layer))
     
     circuit.add_components(transpile_layer(model.layers[-1], True))
@@ -59,7 +102,7 @@ Estimated Total Size (MB): 151.01
     
     return circuit
 
-def transpile_layer(layer: Layer, last: bool = False) -> typing.List[Component]:
+def transpile_layer(layer: str, last: bool = False) -> typing.List[Component]:
     ''' Transpile a Keras layer to CIRCOM component(s).'''
     if layer.op == 'Activation':
         if layer.config['activation'] == 'softmax':
@@ -72,6 +115,8 @@ def transpile_layer(layer: Layer, last: bool = False) -> typing.List[Component]:
             return []
         raise NotImplementedError(f'Activation {layer.config["activation"]} not implemented')
     
+    if layer == 'Embedding':
+
     if layer.op == 'Softmax':
         if last:
             return transpile_ArgMax(layer)
@@ -89,7 +134,7 @@ def transpile_layer(layer: Layer, last: bool = False) -> typing.List[Component]:
     if layer.op == 'Conv2D':
         return transpile_Conv2D(layer)
     
-    if layer.op == 'Dense':
+    if layer == 'Linear":
         return transpile_Dense(layer, last)
         
     if layer.op == 'Flatten':
@@ -207,31 +252,17 @@ def transpile_Conv2D(layer: Layer) -> typing.List[Component]:
     
     return [conv]
 
-def transpile_Dense(layer: Layer, last: bool = False) -> typing.List[Component]:
-    if not last and layer.config['activation'] == 'softmax':
-        raise NotImplementedError('Softmax is only supported as last layer')
-    if layer.config['activation'] not in ['linear', 'relu', 'softmax']:
-        raise NotImplementedError(f'Activation {layer.config["activation"]} is not supported')
-    if layer.config['use_bias'] == False:
-        layer.weights.append(np.zeros(layer.weights[0].shape[-1]))
+def transpile_Dense(layer: str, last: bool = False) -> typing.List[Component]:
     
-    dense = Component(layer.name, templates['Dense'], [
+    dense = Component(layer, templates['Dense'], [
         Signal('in', layer.input),
         Signal('weights', layer.weights[0].shape, layer.weights[0]),
         Signal('bias', layer.weights[1].shape, layer.weights[1]),
         ],[Signal('out', layer.output)],{
         'nInputs': layer.input[0],
         'nOutputs': layer.output[0],
-        })
-    
-    if layer.config['activation'] == 'relu':
-        activation = Component(layer.name+'_re_lu', templates['ReLU'], [Signal('in', layer.output)], [Signal('out', layer.output)])
-        return [dense, activation]
-    
-    if layer.config['activation'] == 'softmax':
-        activation = Component(layer.name+'_softmax', templates['ArgMax'], [Signal('in', layer.output)], [Signal('out', (1,))], {'n': layer.output[0]})
-        return [dense, activation]
-    
+        })    
+
     return [dense]
 
 def transpile_Flatten2D(layer: Layer) -> typing.List[Component]:
