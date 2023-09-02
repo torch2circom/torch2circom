@@ -10,17 +10,7 @@ const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
-const exec = require('await-exec');
-
-const best_practice = require('../models/best_practice.json');
-const alt_model = require('../models/alt_model.json');
-
-function softmax(arr) {
-    return arr.map(function(value,index) { 
-      return Math.exp(value) / arr.map( function(y /*value*/){ return Math.exp(y) } ).reduce( function(a,b){ return a+b })
-    })
-}
-
+// const exec = require('await-exec');
 describe('torch2circom test', function () {
     this.timeout(100000000);
 
