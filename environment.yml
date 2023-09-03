@@ -1,4 +1,4 @@
-name: keras2circom
+name: torch2circom
 channels:
   - defaults
   - conda-forge
@@ -172,4 +172,4 @@ dependencies:
   - zipp=3.8.0=py39hca03da5_0
   - zlib=1.2.12=h5a0b063_3
   - zstd=1.5.2=h8574219_0
-prefix: ~/keras2circom
+prefix: ~/torch2circom

@@ -1,19 +1,22 @@
-# keras2circom
+# torch2circom
 
-keras2circom is a python tool that transpiles a tf.keras model into a circom circuit.
+![torch2circom_banner](https://github.com/torch2circom/torch2circom/assets/87213416/bbd40141-7b85-4ca9-8a60-6b045644201f)
+
+torch2circom is a python tool that transpiles a PyTorch model into a Circom circuit.
 
 ## Installation
 
-First, clone the repository:
+First, clone these two repositories in the same directory:
 
 ```bash
-git clone https://github.com/socathie/keras2circom.git
+git clone https://github.com/torch2circom/circomlib-ml.git
+git clone https://github.com/torch2circom/torch2circom.git
 ```
 
 Then, install the dependencies. You can use pip:
 
 ```bash
-pip install -r requirements.txt
+cd torch2circom && pip install -r requirements.txt
 ```
 
 If you use conda, you can also create a new environment with the following command:
@@ -32,6 +35,15 @@ Last but not least, run
 
 ```bash
 npm install
+```
+
+## Testing
+
+To test the package, you can run the following command:
+
+
+```bash
+npm test
 ```
 
 ## Usage
@@ -56,11 +68,5 @@ If you want to transpile the model into a circom circuit with "raw" output, i.e.
 python main.py models/best_practice.h5 --raw
 ```
 
-## Testing
-
-To test the package, you can run the following command:
-
-```bash
-npm test
-```
-
+## Acknowledgements
+This project is based on [keras2circom](https://github.com/socathie/keras2circom) by [@socathie](https://github.com/socathie).
