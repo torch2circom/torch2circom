@@ -6,16 +6,17 @@ torch2circom is a python tool that transpiles a PyTorch model into a Circom circ
 
 ## Installation
 
-First, clone the repository:
+First, clone these two repositories in the same directory:
 
 ```bash
+git clone https://github.com/torch2circom/circomlib-ml.git
 git clone https://github.com/torch2circom/torch2circom.git
 ```
 
 Then, install the dependencies. You can use pip:
 
 ```bash
-pip install -r requirements.txt
+cd torch2circom && pip install -r requirements.txt
 ```
 
 If you use conda, you can also create a new environment with the following command:
