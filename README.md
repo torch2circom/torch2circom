@@ -2,7 +2,7 @@
 
 ![torch2circom_banner](https://github.com/torch2circom/torch2circom/assets/87213416/bbd40141-7b85-4ca9-8a60-6b045644201f)
 
-torch2circom is a python tool that transpiles a PyTorch model into a circom circuit.
+torch2circom is a python tool that transpiles a PyTorch model into a Circom circuit.
 
 ## Installation
 
@@ -36,6 +36,15 @@ Last but not least, run
 npm install
 ```
 
+## Testing
+
+To test the package, you can run the following command:
+
+
+```bash
+npm test
+```
+
 ## Usage
 
 To use the package, you can run the following command:
@@ -58,11 +67,5 @@ If you want to transpile the model into a circom circuit with "raw" output, i.e.
 python main.py models/best_practice.h5 --raw
 ```
 
-## Testing
-
-To test the package, you can run the following command:
-
-```bash
-npm test
-```
-
+## Acknowledgements
+This project is based on [keras2circom](https://github.com/socathie/keras2circom) by [@socathie](https://github.com/socathie).
