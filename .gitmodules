@@ -1,0 +1,3 @@
+[submodule "circomlib-ml"]
+	path = circomlib-ml
+	url = https://github.com/torch2circom/circomlib-ml
